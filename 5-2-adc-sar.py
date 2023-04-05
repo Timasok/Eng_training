@@ -26,18 +26,37 @@ def num2dec(val):
 def adc():
     for i in range(1<<BIT_DEPTH):
         x = dec2bin(i)
-        GPIO.output(dac, x)
+        print(x)
+        #GPIO.output(dac, x)
         time.sleep(0.001)
         if GPIO.input(comp) == 0:
             GPIO.output(dac, 0)
             return i
 
+def new_adc():
+    val = 0
+    x = 256
+    for i in range(BIT_DEPTH):
+        print(x)
+        # y = dec2bin(x)
+        #print(y)
+        #GPIO.output(dac, y)
+        time.sleep(0.001)
+        if GPIO.input(comp) == 1:
+            val += x 
+        else:
+            val &= ~x
+        if x != 2:
+            x = x >> 1 
+        else:
+            x = 1
+    return val
+
 try:
     while (True):
-        print(adc() * 3.3 / (1<<BIT_DEPTH))
+        print(new_adc() * 3.3 / (1<<BIT_DEPTH))
 
 
 finally:
-
     GPIO.output(dac, 0)
     GPIO.cleanup()
